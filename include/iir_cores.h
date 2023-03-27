@@ -82,36 +82,36 @@ template<typename V> class IirCoreOrderTwo{
         };
 
 
-        // multi-block filtering
-        inline std::array<V,M> T_ZIC_T_ICC2(const std::array<V,M>& x){
+        // // multi-block filtering
+        // inline std::array<V,M> T_ZIC_T_ICC2(const std::array<V,M>& x){
 
-            std::array<V,M> x_T = _permuteV(x);
+        //     std::array<V,M> x_T = _permuteV(x);
 
-            std::array<V,M> w_T = _Zic.T_ZIC(x_T);
+        //     std::array<V,M> w_T = _Zic.T_ZIC(x_T);
 
-            std::array<V,M> y_T = _Icc.T_ICC2(w_T);
+        //     std::array<V,M> y_T = _Icc.T_ICC2(w_T);
 
-            std::array<V,M> y = _permuteV(y_T);
+        //     std::array<V,M> y = _permuteV(y_T);
 
-            return y;
+        //     return y;
 
-        };
+        // };
         
         
-        // multi-block filtering
-        inline std::array<V,M> T_ZIC_T_ICC_old(const std::array<V,M>& x){
+        // // multi-block filtering
+        // inline std::array<V,M> T_ZIC_T_ICC_old(const std::array<V,M>& x){
 
-            std::array<V,M> x_T = _permuteV(x);
+        //     std::array<V,M> x_T = _permuteV(x);
 
-            std::array<V,M> w_T = _Zic.T_ZIC(x_T);
+        //     std::array<V,M> w_T = _Zic.T_ZIC(x_T);
 
-            std::array<V,M> y_T = _Icc.T_ICC_old(w_T);
+        //     std::array<V,M> y_T = _Icc.T_ICC_old(w_T);
 
-            std::array<V,M> y = _permuteV(y_T);
+        //     std::array<V,M> y = _permuteV(y_T);
 
-            return y;
+        //     return y;
 
-        };
+        // };
 
 
         inline V Option_1(const V x){
@@ -166,19 +166,19 @@ template<typename V> class IirCoreOrderTwo{
         };
 
 
-        inline std::array<V,M> Option_3_2(const std::array<V,M>& x){
+        // inline std::array<V,M> Option_3_2(const std::array<V,M>& x){
 
-            std::array<V,M> x_T = _permuteV(x);
+        //     std::array<V,M> x_T = _permuteV(x);
 
-            std::array<V,M> w_T = _Zic.T_ZIC(x_T);
+        //     std::array<V,M> w_T = _Zic.T_ZIC(x_T);
 
-            std::array<V,M> y_T = _Icc.T_ICC2(w_T);
+        //     std::array<V,M> y_T = _Icc.T_ICC2(w_T);
 
-            std::array<V,M> y = _permuteV(y_T);
+        //     std::array<V,M> y = _permuteV(y_T);
 
-            return y;
+        //     return y;
 
-        };
+        // };
 
 
 	// below for cascaded system

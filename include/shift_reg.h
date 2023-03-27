@@ -22,6 +22,7 @@ template<typename V> class Shift{
 
             if constexpr (M == 4) _buffer = blend4<1,2,3,4>(_buffer, x); 
             if constexpr (M == 8) _buffer = blend8<1,2,3,4,5,6,7,8>(_buffer, x); 
+            if constexpr (M == 16) _buffer = blend16<1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16>(_buffer, x);
              
         }; // scalar shift, T
             

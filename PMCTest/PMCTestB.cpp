@@ -30,7 +30,7 @@
 #include "../include/init_cond_correction.h"
 #include "../include/iir_cores.h"
 
-// #include <random>
+#include <random>
 
 
 /*############################################################################
@@ -70,18 +70,18 @@
 // Insert zeroes if you have less than MAXCOUNTERS counters.
 
 extern "C" {
-    int CounterTypesDesired[MAXCOUNTERS] = {
+    int CounterTypesDesired[MAXCOUNTERS] = { // from the skylake microarchitecture
       1,      // core clock cycles (Intel Core 2 and later)
       9,      // instructions (not P4)
       100,    // micro-operations
-      150,    // uops port 0: ALU
-      151,    // uops port 1: ALU
-        // 152,    // uops port 2: load, vbroadcastss
-        // 153,    // uops port 3: load, vbroadcastss
+      150,    // uops port 0: FP FMA
+      151,    // uops port 1: FP FMA
+      155,    // uops port 5: Vect Shuffle
+        // 152,    // uops port 2: load, vbroadcastss, AGU
+        // 153,    // uops port 3: load, vbroadcastss, AGU
         // 154,    // uops port 4: store
-      155,    // uops port 5: ALU
-    //   156,    // uops port 6: ALU, branch
-    //   157,    // uops port 7: store address
+    //   156,    // uops port 6: branch
+    //   157,    // uops port 7: AGU
     //   160,    // uops port 0~7
     //   311     // data cache misses
     };
@@ -143,6 +143,7 @@ extern "C" {
 
 int UserData[NUM_THREADS][USER_DATA_SIZE];
 
+// using V = Vec16f;
 using V = Vec8f;
 // using V = Vec4f;
 
@@ -150,6 +151,7 @@ using T = float;
 
 constexpr static int M = 8;
 // constexpr static int M = 4;
+// constexpr static int M = 16;
 
 using VBlock = std::array<V, M>;
 
@@ -157,13 +159,14 @@ constexpr static int N = 1; // vector, scalar
 
 alignas(64) std::array<VBlock, N> Inputs, Outputs;
 alignas(64) std::array<V, N> V_Inputs, V_Outputs;
+// alignas(256) std::array<VBlock, N> Inputs, Outputs;
+// alignas(256) std::array<V, N> V_Inputs, V_Outputs;
 
-T b1, b2, a1, a2;
-// T b1 = 0.2, b2 = 0.3, a1 = 0.5, a2 = 0.1;
+T b1 = 0.2, b2 = 0.3, a1 = 0.5, a2 = 0.1;
 
-// std::random_device rd{};
-// std::mt19937 gen{rd()};
-// std::normal_distribution<T> d{0.,1.};
+std::random_device rd{};
+std::mt19937 gen{rd()};
+std::normal_distribution<T> d{0.,1.};
 
 
 ZeroInitCond<V> ZIC(b1, b2, a1, a2);
@@ -195,17 +198,17 @@ int TestLoop (int thread) {
     // place any user initializations here:
     // with initialization, the pmctest results become more stable.
 
-    // for (auto n=0; n<N; n++) {  
-    //     for (auto m=0; m<M; m++) {
-    //         T tmp[M] = {d(gen), d(gen), d(gen), d(gen), d(gen), d(gen), d(gen), d(gen)};
-    //         Inputs[n][m].load(tmp);
-    //     }
-    // }
+    for (auto n=0; n<N; n++) {  
+        for (auto m=0; m<M; m++) {
+            T tmp[M] = {d(gen), d(gen), d(gen), d(gen), d(gen), d(gen), d(gen), d(gen)};
+            Inputs[n][m].load(tmp);
+        }
+    }
 
-    // for (auto n=0; n<N; n++) {  
-    //         T tmp[M] = {d(gen), d(gen), d(gen), d(gen), d(gen), d(gen), d(gen), d(gen)};
-    //         Inputs[n].load(tmp);
-    // }
+    for (auto n=0; n<N; n++) {  
+            T tmp[M] = {d(gen), d(gen), d(gen), d(gen), d(gen), d(gen), d(gen), d(gen)};
+            V_Inputs[n].load(tmp);
+    }
 
         
 
@@ -286,11 +289,11 @@ int TestLoop (int thread) {
 
         for (auto n=0; n<N; n++) {
 
-            // V_Outputs[n] = ZIC.NT_ZIC(V_Inputs[n]);
+            V_Outputs[n] = ZIC.NT_ZIC(V_Inputs[n]);
             // V_Outputs[n] = ICC.NT_ICC(V_Inputs[n]);
             // Outputs[n] = ZIC.T_ZIC(Inputs[n]);
             // Outputs[n] = ICC.T_ICC(Inputs[n]);
-            Outputs[n] = ICC.T_ICC2(Inputs[n]);
+            // Outputs[n] = ICC.T_ICC2(Inputs[n]);
             // Outputs[n] = _permuteV(Inputs[n]);
             // V_Outputs[n] = I.Option_1(V_Inputs[n]);
             // Outputs[n] = I.Option_2(Inputs[n]);

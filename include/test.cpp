@@ -1,5 +1,7 @@
 /*    
     clang++ -I/usr/local/include -mavx2 -mfma -march=native -fno-trapping-math -fno-math-errno -I$VCL_PATH -std=c++20 -O3 -o test test.cpp
+    clang++ -I/usr/local/include -mavx2 -mfma -march=native -I$VCL_PATH -std=c++20 -O3 -o test test.cpp
+
 */
 
 #include "shift_reg.h"

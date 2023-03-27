@@ -114,6 +114,21 @@ template<typename V> class ZeroInitCond{
 
             }
 
+            
+            if constexpr (M == 16){ 
+                
+                tmp = blend16<16,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14>(_h1+_p1, 1);
+
+                for (auto n=0; n<M; n++){
+
+                    _H[n] = tmp;
+
+                    tmp = permute16<-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14>(tmp);
+
+                }
+
+            }
+
         };
 
 
@@ -150,6 +165,13 @@ template<typename V> class ZeroInitCond{
 
                 xi2 = blend8<8,0,1,2,3,4,5,6>(x[M-2], _S[-2]);
                 xi1 = blend8<8,0,1,2,3,4,5,6>(x[M-1], _S[-1]);
+
+            }
+
+            if constexpr (M == 16){
+
+                xi2 = blend16<16,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14>(x[M-2], _S[-2]);
+                xi1 = blend16<16,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14>(x[M-1], _S[-1]);
 
             }
 

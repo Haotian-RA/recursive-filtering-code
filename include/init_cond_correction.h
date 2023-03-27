@@ -18,6 +18,7 @@ template<typename V> class InitCondCorc{
         V _rd1_22, _rd1_12, _rd1_21, _rd1_11; 
         V _rd2_22, _rd2_12, _rd2_21, _rd2_11;
         V _rd3_22, _rd3_12, _rd3_21, _rd3_11;
+        V _rd4_22, _rd4_12, _rd4_21, _rd4_11;
         std::array<V,M> _T_22, _T_12, _T_21, _T_11;
 
     public:
@@ -135,6 +136,26 @@ template<typename V> class InitCondCorc{
             }
 
 
+            if constexpr (M == 16){
+
+                _T_22[0] = blend16<16,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14>(_h_22,1);
+                _T_12[0] = permute16<-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14>(_h_12);
+                _T_21[0] = permute16<-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14>(_h_21);
+                _T_11[0] = blend16<16,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14>(_h_11,1);
+
+                for (auto n=1; n<M; n++){
+
+                    _T_22[n] = permute16<-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14>(_T_22[n-1]);
+
+                    _T_12[n] = permute16<-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14>(_T_12[n-1]);
+
+                    _T_21[n] = permute16<-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14>(_T_21[n-1]);
+
+                    _T_11[n] = permute16<-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14>(_T_11[n-1]);
+
+                }
+
+            }
 
         };
 
@@ -194,6 +215,41 @@ template<typename V> class InitCondCorc{
 
             };
 
+
+            if constexpr (M == 16){
+
+                // RD initialization
+                _rd0_22 = permute16<0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1>(_h_22); 
+                _rd0_12 = permute16<0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1>(_h_12);
+                _rd0_21 = permute16<0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1>(_h_21);
+                _rd0_11 = permute16<0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1>(_h_11);
+
+                // RD recursion 1
+                _rd1_22 = permute16<-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0>(_h_22);
+                _rd1_12 = permute16<-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0>(_h_12);
+                _rd1_21 = permute16<-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0>(_h_21);
+                _rd1_11 = permute16<-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0,-1,0>(_h_11);
+
+                // RD recursion 2
+                _rd2_22 = permute16<-1,-1,0,1,-1,-1,0,1,-1,-1,0,1,-1,-1,0,1>(_h_22);
+                _rd2_12 = permute16<-1,-1,0,1,-1,-1,0,1,-1,-1,0,1,-1,-1,0,1>(_h_12);
+                _rd2_21 = permute16<-1,-1,0,1,-1,-1,0,1,-1,-1,0,1,-1,-1,0,1>(_h_21);
+                _rd2_11 = permute16<-1,-1,0,1,-1,-1,0,1,-1,-1,0,1,-1,-1,0,1>(_h_11);
+
+                // RD recursion 3
+                _rd3_22 = permute16<-1,-1,-1,-1,0,1,2,3,-1,-1,-1,-1,0,1,2,3>(_h_22);
+                _rd3_12 = permute16<-1,-1,-1,-1,0,1,2,3,-1,-1,-1,-1,0,1,2,3>(_h_12);
+                _rd3_21 = permute16<-1,-1,-1,-1,0,1,2,3,-1,-1,-1,-1,0,1,2,3>(_h_21);
+                _rd3_11 = permute16<-1,-1,-1,-1,0,1,2,3,-1,-1,-1,-1,0,1,2,3>(_h_11);
+
+                // RD recursion 4
+                _rd4_22 = permute16<-1,-1,-1,-1,-1,-1,-1,-1,0,1,2,3,4,5,6,7>(_h_22);
+                _rd4_12 = permute16<-1,-1,-1,-1,-1,-1,-1,-1,0,1,2,3,4,5,6,7>(_h_12);
+                _rd4_21 = permute16<-1,-1,-1,-1,-1,-1,-1,-1,0,1,2,3,4,5,6,7>(_h_21);
+                _rd4_11 = permute16<-1,-1,-1,-1,-1,-1,-1,-1,0,1,2,3,4,5,6,7>(_h_11);
+
+            };
+
         };
 
 
@@ -206,60 +262,6 @@ template<typename V> class InitCondCorc{
 
             _S.shift(y);
 
-            return y;
-
-        };
-        
-        
-        inline std::array<V,M> T_ICC_old(const std::array<V,M>& w){ // big matrix multiplication
-
-            std::array<V,M> y{0};
-            V yi2, yi1;
-
-            for (auto n=0; n<M; n++){
-
-                y[M-2] = mul_add(_T_22[n], w[M-2][n], y[M-2]);
-                y[M-2] = mul_add(_T_12[n], w[M-1][n], y[M-2]);
-    
-            }
-
-            y[M-2] = mul_add(_h_22, _S[-2], y[M-2]);
-            y[M-2] = mul_add(_h_12, _S[-1], y[M-2]);
-
-            for (auto n=0; n<M; n++){
-
-                y[M-1] = mul_add(_T_21[n], w[M-2][n], y[M-1]);
-                y[M-1] = mul_add(_T_11[n], w[M-1][n], y[M-1]);
-
-            }
-
-            y[M-1] = mul_add(_h_21, _S[-2], y[M-1]);
-            y[M-1] = mul_add(_h_11, _S[-1], y[M-1]);
-
-            if constexpr (M == 4){
-
-                yi2 = blend4<4,0,1,2>(y[M-2], _S[-2]);
-                yi1 = blend4<4,0,1,2>(y[M-1], _S[-1]);
-                
-            }
-
-            if constexpr (M == 8){
-
-                yi2 = blend8<8,0,1,2,3,4,5,6>(y[M-2], _S[-2]);
-                yi1 = blend8<8,0,1,2,3,4,5,6>(y[M-1], _S[-1]);
-                
-            }
-
-            for (auto i=0; i<M-2; i++){
-                
-                y[i] = mul_add(yi2, _h2[i], w[i]);
-                y[i] = mul_add(yi1, _h1[i], y[i]);
-
-            };
-     
-            _S.shift(y[M-2][M-1]);
-            _S.shift(y[M-1][M-1]); 
-            
             return y;
 
         };
@@ -340,94 +342,47 @@ template<typename V> class InitCondCorc{
             };
 
 
-            for (auto i=0; i<M-2; i++){
-                
-                y[i] = mul_add(yi2, _h2[i], w[i]);
-                y[i] = mul_add(yi1, _h1[i], y[i]);
-
-            };
-     
-            _S.shift(y[M-2][M-1]);
-            _S.shift(y[M-1][M-1]); 
-            
-            return y; 
-
-        };
-
-
-        inline std::array<V,M> T_ICC2(const std::array<V,M>& w){ // recursive doubling tree 2
-
-            std::array<V,M> y;
-            V tmp2{0}, tmp1{0}, yi2, yi1;
-            tmp2.insert(0,_S[-2]);
-            tmp1.insert(0,_S[-1]);
-            
-            // step 1: initialization
-            y[M-2] = mul_add(tmp2, _h_22[0], w[M-2]);
-            y[M-2] = mul_add(tmp1, _h_12[0], y[M-2]);
-            y[M-1] = mul_add(tmp2, _h_21[0], w[M-1]);
-            y[M-1] = mul_add(tmp1, _h_11[0], y[M-1]);
-
-
-            if constexpr (M == 4){
+            if constexpr (M == 16){ 
 
                 // step 2: first recursion
-                tmp2 = permute4<-1,0,1,2>(y[M-2]);
-                tmp1 = permute4<-1,0,1,2>(y[M-1]);
+                tmp2 = permute16<-1,0,-1,2,-1,4,-1,6,-1,8,-1,10,-1,12,-1,14>(y[M-2]);
+                tmp1 = permute16<-1,0,-1,2,-1,4,-1,6,-1,8,-1,10,-1,12,-1,14>(y[M-1]);
 
-                y[M-2] = mul_add(tmp2, _h_22[0], y[M-2]);
-                y[M-2] = mul_add(tmp1, _h_12[0], y[M-2]);
-                y[M-1] = mul_add(tmp2, _h_21[0], y[M-1]);
-                y[M-1] = mul_add(tmp1, _h_11[0], y[M-1]);
-
-                // step 3: second recursion
-                tmp2 = permute4<-1,-1,0,1>(y[M-2]);
-                tmp1 = permute4<-1,-1,0,1>(y[M-1]);
-
-                y[M-2] = mul_add(tmp2, _h_22[1], y[M-2]);
-                y[M-2] = mul_add(tmp1, _h_12[1], y[M-2]);
-                y[M-1] = mul_add(tmp2, _h_21[1], y[M-1]);
-                y[M-1] = mul_add(tmp1, _h_11[1], y[M-1]);
-
-                // shuffle and forward
-                yi2 = blend4<4,0,1,2>(y[M-2], _S[-2]);
-                yi1 = blend4<4,0,1,2>(y[M-1], _S[-1]);
-
-            };
-
-
-            if constexpr (M == 8){
-
-                // step 2: first recursion
-                tmp2 = permute8<-1,0,1,2,3,4,5,6>(y[M-2]);
-                tmp1 = permute8<-1,0,1,2,3,4,5,6>(y[M-1]);
-
-                y[M-2] = mul_add(tmp2, _h_22[0], y[M-2]);
-                y[M-2] = mul_add(tmp1, _h_12[0], y[M-2]);
-                y[M-1] = mul_add(tmp2, _h_21[0], y[M-1]);
-                y[M-1] = mul_add(tmp1, _h_11[0], y[M-1]);
+                y[M-2] = mul_add(tmp2, _rd1_22, y[M-2]);
+                y[M-2] = mul_add(tmp1, _rd1_12, y[M-2]);
+                y[M-1] = mul_add(tmp2, _rd1_21, y[M-1]);
+                y[M-1] = mul_add(tmp1, _rd1_11, y[M-1]);
 
                 // step 3: second recursion
-                tmp2 = permute8<-1,-1,0,1,2,3,4,5>(y[M-2]);
-                tmp1 = permute8<-1,-1,0,1,2,3,4,5>(y[M-1]);
+                tmp2 = permute16<-1,-1,1,1,-1,-1,5,5,-1,-1,9,9,-1,-1,13,13>(y[M-2]);
+                tmp1 = permute16<-1,-1,1,1,-1,-1,5,5,-1,-1,9,9,-1,-1,13,13>(y[M-1]);
 
-                y[M-2] = mul_add(tmp2, _h_22[1], y[M-2]);
-                y[M-2] = mul_add(tmp1, _h_12[1], y[M-2]);
-                y[M-1] = mul_add(tmp2, _h_21[1], y[M-1]);
-                y[M-1] = mul_add(tmp1, _h_11[1], y[M-1]);
+                y[M-2] = mul_add(tmp2, _rd2_22, y[M-2]);
+                y[M-2] = mul_add(tmp1, _rd2_12, y[M-2]);
+                y[M-1] = mul_add(tmp2, _rd2_21, y[M-1]);
+                y[M-1] = mul_add(tmp1, _rd2_11, y[M-1]);
 
                 // step 4: third recursion
-                tmp2 = permute8<-1,-1,-1,-1,0,1,2,3>(y[M-2]);
-                tmp1 = permute8<-1,-1,-1,-1,0,1,2,3>(y[M-1]);
+                tmp2 = permute16<-1,-1,-1,-1,3,3,3,3,-1,-1,-1,-1,11,11,11,11>(y[M-2]);
+                tmp1 = permute16<-1,-1,-1,-1,3,3,3,3,-1,-1,-1,-1,11,11,11,11>(y[M-1]);
 
-                y[M-2] = mul_add(tmp2, _h_22[3], y[M-2]);
-                y[M-2] = mul_add(tmp1, _h_12[3], y[M-2]);
-                y[M-1] = mul_add(tmp2, _h_21[3], y[M-1]);
-                y[M-1] = mul_add(tmp1, _h_11[3], y[M-1]);
+                y[M-2] = mul_add(tmp2, _rd3_22, y[M-2]);
+                y[M-2] = mul_add(tmp1, _rd3_12, y[M-2]);
+                y[M-1] = mul_add(tmp2, _rd3_21, y[M-1]);
+                y[M-1] = mul_add(tmp1, _rd3_11, y[M-1]);
+
+                // step 4: fourth recursion
+                tmp2 = permute16<-1,-1,-1,-1,-1,-1,-1,-1,7,7,7,7,7,7,7,7>(y[M-2]);
+                tmp1 = permute16<-1,-1,-1,-1,-1,-1,-1,-1,7,7,7,7,7,7,7,7>(y[M-1]);
+
+                y[M-2] = mul_add(tmp2, _rd4_22, y[M-2]);
+                y[M-2] = mul_add(tmp1, _rd4_12, y[M-2]);
+                y[M-1] = mul_add(tmp2, _rd4_21, y[M-1]);
+                y[M-1] = mul_add(tmp1, _rd4_11, y[M-1]);
 
                 // shuffle and forward
-                yi2 = blend8<8,0,1,2,3,4,5,6>(y[M-2], _S[-2]);
-                yi1 = blend8<8,0,1,2,3,4,5,6>(y[M-1], _S[-1]);
+                yi2 = blend16<16,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14>(y[M-2], _S[-2]);
+                yi1 = blend16<16,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14>(y[M-1], _S[-1]);
 
             };
 
@@ -445,6 +400,152 @@ template<typename V> class InitCondCorc{
             return y; 
 
         };
+
+
+        // inline std::array<V,M> T_ICC_old(const std::array<V,M>& w){ // big matrix multiplication
+
+        //     std::array<V,M> y{0};
+        //     V yi2, yi1;
+
+        //     for (auto n=0; n<M; n++){
+
+        //         y[M-2] = mul_add(_T_22[n], w[M-2][n], y[M-2]);
+        //         y[M-2] = mul_add(_T_12[n], w[M-1][n], y[M-2]);
+    
+        //     }
+
+        //     y[M-2] = mul_add(_h_22, _S[-2], y[M-2]);
+        //     y[M-2] = mul_add(_h_12, _S[-1], y[M-2]);
+
+        //     for (auto n=0; n<M; n++){
+
+        //         y[M-1] = mul_add(_T_21[n], w[M-2][n], y[M-1]);
+        //         y[M-1] = mul_add(_T_11[n], w[M-1][n], y[M-1]);
+
+        //     }
+
+        //     y[M-1] = mul_add(_h_21, _S[-2], y[M-1]);
+        //     y[M-1] = mul_add(_h_11, _S[-1], y[M-1]);
+
+        //     if constexpr (M == 4){
+
+        //         yi2 = blend4<4,0,1,2>(y[M-2], _S[-2]);
+        //         yi1 = blend4<4,0,1,2>(y[M-1], _S[-1]);
+                
+        //     }
+
+        //     if constexpr (M == 8){
+
+        //         yi2 = blend8<8,0,1,2,3,4,5,6>(y[M-2], _S[-2]);
+        //         yi1 = blend8<8,0,1,2,3,4,5,6>(y[M-1], _S[-1]);
+                
+        //     }
+
+        //     for (auto i=0; i<M-2; i++){
+                
+        //         y[i] = mul_add(yi2, _h2[i], w[i]);
+        //         y[i] = mul_add(yi1, _h1[i], y[i]);
+
+        //     };
+     
+        //     _S.shift(y[M-2][M-1]);
+        //     _S.shift(y[M-1][M-1]); 
+            
+        //     return y;
+
+        // };
+
+
+        // inline std::array<V,M> T_ICC2(const std::array<V,M>& w){ // recursive doubling tree 2
+
+        //     std::array<V,M> y;
+        //     V tmp2{0}, tmp1{0}, yi2, yi1;
+        //     tmp2.insert(0,_S[-2]);
+        //     tmp1.insert(0,_S[-1]);
+            
+        //     // step 1: initialization
+        //     y[M-2] = mul_add(tmp2, _h_22[0], w[M-2]);
+        //     y[M-2] = mul_add(tmp1, _h_12[0], y[M-2]);
+        //     y[M-1] = mul_add(tmp2, _h_21[0], w[M-1]);
+        //     y[M-1] = mul_add(tmp1, _h_11[0], y[M-1]);
+
+
+        //     if constexpr (M == 4){
+
+        //         // step 2: first recursion
+        //         tmp2 = permute4<-1,0,1,2>(y[M-2]);
+        //         tmp1 = permute4<-1,0,1,2>(y[M-1]);
+
+        //         y[M-2] = mul_add(tmp2, _h_22[0], y[M-2]);
+        //         y[M-2] = mul_add(tmp1, _h_12[0], y[M-2]);
+        //         y[M-1] = mul_add(tmp2, _h_21[0], y[M-1]);
+        //         y[M-1] = mul_add(tmp1, _h_11[0], y[M-1]);
+
+        //         // step 3: second recursion
+        //         tmp2 = permute4<-1,-1,0,1>(y[M-2]);
+        //         tmp1 = permute4<-1,-1,0,1>(y[M-1]);
+
+        //         y[M-2] = mul_add(tmp2, _h_22[1], y[M-2]);
+        //         y[M-2] = mul_add(tmp1, _h_12[1], y[M-2]);
+        //         y[M-1] = mul_add(tmp2, _h_21[1], y[M-1]);
+        //         y[M-1] = mul_add(tmp1, _h_11[1], y[M-1]);
+
+        //         // shuffle and forward
+        //         yi2 = blend4<4,0,1,2>(y[M-2], _S[-2]);
+        //         yi1 = blend4<4,0,1,2>(y[M-1], _S[-1]);
+
+        //     };
+
+
+        //     if constexpr (M == 8){
+
+        //         // step 2: first recursion
+        //         tmp2 = permute8<-1,0,1,2,3,4,5,6>(y[M-2]);
+        //         tmp1 = permute8<-1,0,1,2,3,4,5,6>(y[M-1]);
+
+        //         y[M-2] = mul_add(tmp2, _h_22[0], y[M-2]);
+        //         y[M-2] = mul_add(tmp1, _h_12[0], y[M-2]);
+        //         y[M-1] = mul_add(tmp2, _h_21[0], y[M-1]);
+        //         y[M-1] = mul_add(tmp1, _h_11[0], y[M-1]);
+
+        //         // step 3: second recursion
+        //         tmp2 = permute8<-1,-1,0,1,2,3,4,5>(y[M-2]);
+        //         tmp1 = permute8<-1,-1,0,1,2,3,4,5>(y[M-1]);
+
+        //         y[M-2] = mul_add(tmp2, _h_22[1], y[M-2]);
+        //         y[M-2] = mul_add(tmp1, _h_12[1], y[M-2]);
+        //         y[M-1] = mul_add(tmp2, _h_21[1], y[M-1]);
+        //         y[M-1] = mul_add(tmp1, _h_11[1], y[M-1]);
+
+        //         // step 4: third recursion
+        //         tmp2 = permute8<-1,-1,-1,-1,0,1,2,3>(y[M-2]);
+        //         tmp1 = permute8<-1,-1,-1,-1,0,1,2,3>(y[M-1]);
+
+        //         y[M-2] = mul_add(tmp2, _h_22[3], y[M-2]);
+        //         y[M-2] = mul_add(tmp1, _h_12[3], y[M-2]);
+        //         y[M-1] = mul_add(tmp2, _h_21[3], y[M-1]);
+        //         y[M-1] = mul_add(tmp1, _h_11[3], y[M-1]);
+
+        //         // shuffle and forward
+        //         yi2 = blend8<8,0,1,2,3,4,5,6>(y[M-2], _S[-2]);
+        //         yi1 = blend8<8,0,1,2,3,4,5,6>(y[M-1], _S[-1]);
+
+        //     };
+
+
+        //     for (auto i=0; i<M-2; i++){
+                
+        //         y[i] = mul_add(yi2, _h2[i], w[i]);
+        //         y[i] = mul_add(yi1, _h1[i], y[i]);
+
+        //     };
+     
+        //     _S.shift(y[M-2][M-1]);
+        //     _S.shift(y[M-1][M-1]); 
+            
+        //     return y; 
+
+        // };
 
 
 

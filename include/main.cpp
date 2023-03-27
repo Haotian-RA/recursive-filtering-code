@@ -105,27 +105,27 @@ TEST_CASE("IIR second core accuracy test, M=8:"){
     for (auto n=0; n<M*M; n++) CHECK(y6[n] == doctest::Approx(y_ben[n]));
 
 
-    // T_ZIC and T_ICC
-    IirCoreOrderTwo<V> I7(b1,b2,a1,a2,xi1,xi2,yi1,yi2);
+    // // T_ZIC and T_ICC
+    // IirCoreOrderTwo<V> I7(b1,b2,a1,a2,xi1,xi2,yi1,yi2);
 
-    std::array<T, M*M> y7;
+    // std::array<T, M*M> y7;
 
-    y = I7.T_ZIC_T_ICC2(x);
+    // y = I7.T_ZIC_T_ICC2(x);
 
-    for (auto n=0; n<M; n++) y[n].store(&y7[n*M]); 
+    // for (auto n=0; n<M; n++) y[n].store(&y7[n*M]); 
 
-    for (auto n=0; n<M*M; n++) CHECK(y7[n] == doctest::Approx(y_ben[n]));
+    // for (auto n=0; n<M*M; n++) CHECK(y7[n] == doctest::Approx(y_ben[n]));
     
-    // T_ZIC and T_ICC
-    IirCoreOrderTwo<V> I8(b1,b2,a1,a2,xi1,xi2,yi1,yi2);
+    // // T_ZIC and T_ICC
+    // IirCoreOrderTwo<V> I8(b1,b2,a1,a2,xi1,xi2,yi1,yi2);
 
-    std::array<T, M*M> y8;
+    // std::array<T, M*M> y8;
 
-    y = I8.T_ZIC_T_ICC_old(x);
+    // y = I8.T_ZIC_T_ICC_old(x);
 
-    for (auto n=0; n<M; n++) y[n].store(&y8[n*M]); 
+    // for (auto n=0; n<M; n++) y[n].store(&y8[n*M]); 
 
-    for (auto n=0; n<M*M; n++) CHECK(y8[n] == doctest::Approx(y_ben[n]));
+    // for (auto n=0; n<M*M; n++) CHECK(y8[n] == doctest::Approx(y_ben[n]));
 
 
 }
@@ -218,29 +218,142 @@ TEST_CASE("IIR second core accuracy test, M=4:"){
     for (auto n=0; n<M*M; n++) CHECK(y6[n] == doctest::Approx(y_ben[n]));
 
 
+    // // T_ZIC and T_ICC
+    // IirCoreOrderTwo<V> I7(b1,b2,a1,a2,xi1,xi2,yi1,yi2);
+
+    // std::array<T, M*M> y7;
+
+    // y = I7.T_ZIC_T_ICC2(x);
+
+    // for (auto n=0; n<M; n++) y[n].store(&y7[n*M]); 
+
+    // for (auto n=0; n<M*M; n++) CHECK(y7[n] == doctest::Approx(y_ben[n]));
+
+
+    // // T_ZIC and T_ICC
+    // IirCoreOrderTwo<V> I8(b1,b2,a1,a2,xi1,xi2,yi1,yi2);
+
+    // std::array<T, M*M> y8;
+
+    // y = I8.T_ZIC_T_ICC_old(x);
+
+    // for (auto n=0; n<M; n++) y[n].store(&y8[n*M]); 
+
+    // for (auto n=0; n<M*M; n++) CHECK(y8[n] == doctest::Approx(y_ben[n]));
+
+
+
+}
+
+
+TEST_CASE("IIR second core accuracy test, M=16:"){
+
+    using V = Vec16f;
+    const int M = V::size();
+    using T = float;
+
+    T b1 = 0.1, b2 = -0.5, a1 = 0.2, a2 = 0.3;
+    T xi1 = 2, xi2 = 3, yi1 = -0.5, yi2 = 1.5;
+
+    std::vector<T> data(M*M);
+    std::iota(data.begin(), data.end(), 0); 
+
+
+    // benchmark (scalar)
+    IirCoreOrderTwo<V> I1(b1,b2,a1,a2,xi1,xi2,yi1,yi2);
+
+    std::array<T, M*M> y_ben;
+
+    for (auto n=0; n<M*M; n++) y_ben[n] = I1.IIR_benchmark(data[n]);
+
+    std::array<V,M> x, y;
+
+    for (auto n=0; n<M; n++) x[n].load(&data[n*M]);
+    
+
+    // NT_ZIC and NT_ICC
+    IirCoreOrderTwo<V> I2(b1,b2,a1,a2,xi1,xi2,yi1,yi2);
+
+    std::array<T, M*M> y2;
+
+    for (auto n=0; n<M; n++) y[n] = I2.NT_ZIC_NT_ICC(x[n]);
+
+    for (auto n=0; n<M; n++) y[n].store(&y2[n*M]); 
+
+    for (auto n=0; n<M*M; n++) CHECK(y2[n] == doctest::Approx(y_ben[n]));
+
+
+
     // T_ZIC and T_ICC
-    IirCoreOrderTwo<V> I7(b1,b2,a1,a2,xi1,xi2,yi1,yi2);
+    IirCoreOrderTwo<V> I3(b1,b2,a1,a2,xi1,xi2,yi1,yi2);
 
-    std::array<T, M*M> y7;
+    std::array<T, M*M> y3;
 
-    y = I7.T_ZIC_T_ICC2(x);
+    y = I3.T_ZIC_T_ICC(x);
 
-    for (auto n=0; n<M; n++) y[n].store(&y7[n*M]); 
+    for (auto n=0; n<M; n++) y[n].store(&y3[n*M]); 
 
-    for (auto n=0; n<M*M; n++) CHECK(y7[n] == doctest::Approx(y_ben[n]));
+    for (auto n=0; n<M*M; n++) CHECK(y3[n] == doctest::Approx(y_ben[n]));
 
 
-    // T_ZIC and T_ICC
-    IirCoreOrderTwo<V> I8(b1,b2,a1,a2,xi1,xi2,yi1,yi2);
+    // Option 2: T_ZIC and NT_ICC
+    IirCoreOrderTwo<V> I4(b1,b2,a1,a2,xi1,xi2,yi1,yi2);
 
-    std::array<T, M*M> y8;
+    std::array<T, M*M> y4;
 
-    y = I8.T_ZIC_T_ICC_old(x);
+    y = I4.Option_2(x);
 
-    for (auto n=0; n<M; n++) y[n].store(&y8[n*M]); 
+    for (auto n=0; n<M; n++) y[n].store(&y4[n*M]); 
 
-    for (auto n=0; n<M*M; n++) CHECK(y8[n] == doctest::Approx(y_ben[n]));
+    for (auto n=0; n<M*M; n++) CHECK(y4[n] == doctest::Approx(y_ben[n]));
 
+
+    // Option 3: T_ZIC and T_ICC
+    IirCoreOrderTwo<V> I5(b1,b2,a1,a2,xi1,xi2,yi1,yi2);
+
+    std::array<T, M*M> y5;
+
+    y = I5.Option_3(x);
+
+    for (auto n=0; n<M; n++) y[n].store(&y5[n*M]); 
+
+    for (auto n=0; n<M*M; n++) CHECK(y5[n] == doctest::Approx(y_ben[n]));
+
+
+
+    // Option 1: NT_ZIC and NT_ICC
+    IirCoreOrderTwo<V> I6(b1,b2,a1,a2,xi1,xi2,yi1,yi2);
+
+    std::array<T, M*M> y6;
+
+    for (auto n=0; n<M; n++) y[n] = I6.Option_1(x[n]);
+
+    for (auto n=0; n<M; n++) y[n].store(&y6[n*M]); 
+
+    for (auto n=0; n<M*M; n++) CHECK(y6[n] == doctest::Approx(y_ben[n]));
+
+
+    // // T_ZIC and T_ICC
+    // IirCoreOrderTwo<V> I7(b1,b2,a1,a2,xi1,xi2,yi1,yi2);
+
+    // std::array<T, M*M> y7;
+
+    // y = I7.T_ZIC_T_ICC2(x);
+
+    // for (auto n=0; n<M; n++) y[n].store(&y7[n*M]); 
+
+    // for (auto n=0; n<M*M; n++) CHECK(y7[n] == doctest::Approx(y_ben[n]));
+    
+    // // T_ZIC and T_ICC
+    // IirCoreOrderTwo<V> I8(b1,b2,a1,a2,xi1,xi2,yi1,yi2);
+
+    // std::array<T, M*M> y8;
+
+    // y = I8.T_ZIC_T_ICC_old(x);
+
+    // for (auto n=0; n<M; n++) y[n].store(&y8[n*M]); 
+
+    // for (auto n=0; n<M*M; n++) CHECK(y8[n] == doctest::Approx(y_ben[n]));
 
 
 }
