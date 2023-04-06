@@ -65,7 +65,7 @@ template<typename V> class InitCondCorc{
             recursive_doubling_vectors();
 
             // pre-compute matrix T(and D) in matrix multplication (MM) method
-            T();
+            T_MM();
         };
 
         
@@ -566,7 +566,7 @@ template<typename V> class InitCondCorc{
             Basically, T is a 2M by 2M matrix, where each sub-matrix of size M by M 
             is lower triangular toplitz matrix related to 4 vectors in C power and D is exactly C power. 
          */
-        inline void T() {
+        inline void T_MM() {
 
             C_power();
 
