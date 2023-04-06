@@ -1,1 +1,0 @@
-cmd_/home/nancy/new/DriverSrcLinux/MSRdrv.ko := ld -r  -m elf_x86_64 -z noexecstack   --build-id=sha1  -T scripts/module.lds -o /home/nancy/new/DriverSrcLinux/MSRdrv.ko /home/nancy/new/DriverSrcLinux/MSRdrv.o /home/nancy/new/DriverSrcLinux/MSRdrv.mod.o;  true
