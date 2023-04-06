@@ -11,6 +11,7 @@ include_directories($(Test_SOURCE_DIR)/src/vcl)
 
 add_executable(TEST test/option1.cpp)
 
+target_link_libraries(TEST PRIVATE doctest)
 doctest_discover_tests(TEST)
 
 
