@@ -15,7 +15,7 @@ template<typename V> inline std::array<V,V::size()> _permuteV(const std::array<V
     if constexpr (V::size() == 16) _permuteV16(matrix.data(), matrix_T.data());
 
     return matrix_T;
-}
+};
 
 // matrix transpose for matrix in size 4 by 4
 template<typename V> inline void _permuteV4(const V matrix[4], V matrix_T[4]) {
@@ -32,7 +32,7 @@ template<typename V> inline void _permuteV4(const V matrix[4], V matrix_T[4]) {
     matrix_T[1] = blend4<1,5,3,7>(tmp[0], tmp[1]);
     matrix_T[2] = blend4<0,4,2,6>(tmp[2], tmp[3]);
     matrix_T[3] = blend4<1,5,3,7>(tmp[2], tmp[3]);
-}
+};
 
 // matrix transpose for matrix in size 8 by 8
 template<typename V> inline void _permuteV8(const V matrix[8], V matrix_T[8]) {
@@ -67,7 +67,7 @@ template<typename V> inline void _permuteV8(const V matrix[8], V matrix_T[8]) {
     matrix_T[5] = blend8<1,9,3,11,5,13,7,15>(tmp2[4], tmp2[5]);
     matrix_T[6] = blend8<0,8,2,10,4,12,6,14>(tmp2[6], tmp2[7]);
     matrix_T[7] = blend8<1,9,3,11,5,13,7,15>(tmp2[6], tmp2[7]); 
-}
+};
 
 // matrix transpose for matrix in size 16 by 16
 template<typename V> inline void _permuteV16(const V matrix[16], V matrix_T[16]) {
@@ -144,6 +144,6 @@ template<typename V> inline void _permuteV16(const V matrix[16], V matrix_T[16])
     matrix_T[13] = blend16<1,17,3,19,5,21,7,23,9,25,11,27,13,29,15,31>(tmp3[12], tmp3[13]);
     matrix_T[14] = blend16<0,16,2,18,4,20,6,22,8,24,10,26,12,28,14,30>(tmp3[14], tmp3[15]);
     matrix_T[15] = blend16<1,17,3,19,5,21,7,23,9,25,11,27,13,29,15,31>(tmp3[14], tmp3[15]); 
-}
+};
 
 #endif

@@ -40,7 +40,7 @@ TEST_CASE("option 1 accuracy test, M=4:") {
 
     // check accuracy of filter sample by sample
     for (auto n=0; n<M*M; n++) CHECK(y_op1[n] == doctest::Approx(y_ben[n]));
-}
+};
 
 TEST_CASE("option 1 accuracy test, M=8:") {
     // testing for AVX2
@@ -76,7 +76,7 @@ TEST_CASE("option 1 accuracy test, M=8:") {
 
     // check accuracy of filter sample by sample
     for (auto n=0; n<M*M; n++) CHECK(y_op1[n] == doctest::Approx(y_ben[n]));
-}
+};
 
 TEST_CASE("option 1 accuracy test, M=16:") {
     // testing for AVX512
@@ -112,7 +112,7 @@ TEST_CASE("option 1 accuracy test, M=16:") {
 
     // check accuracy of filter sample by sample
     for (auto n=0; n<M*M; n++) CHECK(y_op1[n] == doctest::Approx(y_ben[n]));
-}
+};
 
 TEST_SUITE_END();
 

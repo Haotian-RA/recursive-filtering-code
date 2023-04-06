@@ -78,10 +78,8 @@ template<typename V> class IirCoreOrderTwo{
         // the basic second order filter by processing scalars for accuracy check
         inline T benchmark(const T x) {
 
-            T y = x + _b1*_Zic._S[-1] + _b2*_Zic._S[-2] + _a1*_Icc._S[-1] + _a2*_Icc._S[-2];
-
-            _Zic._S.shift(x);
-            _Icc._S.shift(y);
+            T w = _Zic.ZIC_S(x); 
+            T y = _Icc.ICC_S(w); 
 
             return y;
         };

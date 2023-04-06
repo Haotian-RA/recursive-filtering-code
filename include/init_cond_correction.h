@@ -80,6 +80,15 @@ template<typename V> class InitCondCorc{
          */
 
 
+        // calculate the homogeneous part of recursive equation by scalar
+        inline T ICC_S(const T w) {
+            T y = w + _a1*_S[-1] + _a2*_S[-2];
+
+            _S.shift(y);
+
+            return y;
+        };
+
         // calculate the homogeneous part of recursive equation by block filtering
         inline V ICC_NT(const V w) {
             V y;

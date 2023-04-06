@@ -51,11 +51,21 @@ template<typename V> class ZeroInitCond{
         /* 
         
             Functions for calculating particular part of second order recursive equation, which are
+            ZIC_s: scalar, sample by sample.
             ZIC_NT: block filtering.
             ZIC_T: multi-block filtering.
         
          */
 
+        
+        // calculate the particular part of recursive equation by scalar
+        inline T ZIC_S(const T x) {
+            T w = x + _b1*_S[-1] + _b2*_S[-2];
+
+            _S.shift(x);
+
+            return w;
+        };
 
         // calculate the particular part of recursive equation by block filtering
         inline V ZIC_NT(const V x) {
@@ -160,7 +170,7 @@ template<typename V> class ZeroInitCond{
             _h2.load(&h0[0]);
             _h2 *= _a2;
             _h1.load(&h0[1]);
-        }
+        };
 
         // calculate the transition matrix H for block filtering, which is a lower triangular toplitz matrix.
         inline void H() {
