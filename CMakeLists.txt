@@ -11,3 +11,6 @@ include_directories($(Test_SOURCE_DIR)/src/vcl)
 
 add_executable(TEST test/option1.cpp)
 
+doctest_discover_tests(TEST)
+
+
