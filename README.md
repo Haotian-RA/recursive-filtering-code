@@ -21,7 +21,7 @@ Test is also provided
    ```js
    make test
    ``` 
-
+   
 <!-- USAGE -->
 ## Usage
 * Solve for the round error issue happening at building higher order recursive filter in direct form.
@@ -32,6 +32,10 @@ the cascaded form of recursive filter re-match up with the desired poles making 
 * Filter matrix of samples rather than vector or scalar realizing more efficient computations.
 <img src="https://github.com/Haotian-RA/recursive-filtering-2-24/blob/main/figures/real_time_filtering.png?raw=true" width="300" /> 
 filtering matrix of samples saves almost double time than vector of samples, 4 times than scalar.
+
+<!-- COMPILER RECOMMENDATION -->
+## Compiler recommendation
+Latest Clang 15.0.0 or 16.0.0.
 
 <!-- LICENSE -->
 ## License
