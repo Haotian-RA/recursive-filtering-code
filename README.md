@@ -1,8 +1,26 @@
 ## Recursive-Filtering
-This is a C++ class library for applying a recursive filter by filtering matrix of samples and cascading second order sections to realize both computational efficiency and filter's accuracy.
+This is a C++ header-only library for applying a recursive filter by filtering matrix of samples and cascading second order sections to realize both computational efficiency and filter's accuracy.
 
 <!-- INSTALLATION -->
 ## Installation
+Clone the repository
+   ```sh
+   git clone https://github.com/Haotian-RA/recursive-filtering-code.git
+   ```
+Make and go into a directory
+   ```sh
+   mkdir build
+   cd build
+   ```
+Configure and build the header-only library by cmake
+   ```js
+   cmake ../
+   sudo cmake --build . --config Release --target install
+   ```
+Test is also provided
+   ```js
+   make test
+   ``` 
 
 <!-- USAGE -->
 ## Usage
