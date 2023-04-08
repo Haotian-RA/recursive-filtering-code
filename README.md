@@ -7,7 +7,7 @@ Clone the repository
    ```sh
    git clone https://github.com/Haotian-RA/recursive-filtering-code.git
    ```
-Make and go into a directory
+Make and go into a sub-directory
    ```sh
    mkdir build
    cd build
