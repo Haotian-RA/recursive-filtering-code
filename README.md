@@ -37,7 +37,7 @@ filtering matrix of samples saves almost double time than vector of samples, 4 t
 ## Compiler recommendation
 Latest LLVM Clang 15.0.0 or 16.0.0, and suggested compile options
    ```js
-   clang++ -I/usr/local/include -mavx2 -mfma -march=native -fno-trapping-math -fno-math-errno -I$VCL_PATH -std=c++20 -O3 -o filter filter.cpp
+   -std=c++20 -mavx2 -mfma -march=native -fno-trapping-math -fno-math-errno -O3 
    ``` 
 
 <!-- LICENSE -->
