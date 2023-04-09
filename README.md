@@ -3,9 +3,10 @@ This is a C++ header-only library for applying a recursive filter by filtering m
 
 <!-- INSTALLATION -->
 ## Installation
-Clone the repository
+Clone the repository 
    ```sh
    git clone https://github.com/Haotian-RA/recursive-filtering-code.git
+   cd recursive-filtering-code
    ```
 Make and go into a sub-directory
    ```sh
