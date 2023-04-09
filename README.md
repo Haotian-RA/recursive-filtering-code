@@ -34,8 +34,8 @@ the cascaded form of recursive filter re-match up with the desired poles making 
 filtering matrix of samples saves almost double time than vector of samples, 4 times than scalar.
 
 <!-- COMPILER and COMPILE FLAGS RECOMMENDATION -->
-## Compiler recommendation
-LLVM Clang 15.0.0 or 16.0.0, and suggested compile options
+## Compiler Options
+LLVM Clang 15.0.0 or 16.0.0 is recommended, and suggested compile flags are 
    ```js
    -std=c++20 -mavx2 -mfma -march=native -fno-trapping-math -fno-math-errno -O3 
    ``` 
