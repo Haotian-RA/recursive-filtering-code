@@ -33,9 +33,12 @@ the cascaded form of recursive filter re-match up with the desired poles making 
 <img src="https://github.com/Haotian-RA/recursive-filtering-2-24/blob/main/figures/real_time_filtering.png?raw=true" width="300" /> 
 filtering matrix of samples saves almost double time than vector of samples, 4 times than scalar.
 
-<!-- COMPILER RECOMMENDATION -->
+<!-- COMPILER and COMPILE FLAGS RECOMMENDATION -->
 ## Compiler recommendation
-Latest Clang 15.0.0 or 16.0.0.
+Latest LLVM Clang 15.0.0 or 16.0.0, and suggested compile options
+   ```js
+   clang++ -I/usr/local/include -mavx2 -mfma -march=native -fno-trapping-math -fno-math-errno -I$VCL_PATH -std=c++20 -O3 -o filter filter.cpp
+   ``` 
 
 <!-- LICENSE -->
 ## License
