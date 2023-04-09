@@ -15,7 +15,7 @@ Make and go into a sub-directory
 Configure and build the header-only library by cmake
    ```js
    cmake ../
-   sudo cmake --build . --config Release --target install
+   cmake --build . --config Release --target install
    ```
 Test is also provided
    ```js
