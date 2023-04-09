@@ -17,14 +17,6 @@ target_include_directories(
 )
 
 # Test
-set(CMAKE_CXX_COMPILER "clang++")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -I/usr/local/include -march=native -mavx2 -mfma -O3")
-add_executable(option test/option.cpp)
-add_executable(cascaded_option test/cascaded_option.cpp)
-add_executable(series test/series.cpp)
-add_executable(filter_test test/filter.cpp)
-add_executable(filter example/filter.cpp)
-
 include(ExternalProject)
 
 set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/external)
@@ -41,6 +33,14 @@ include_directories(${EXTERNAL_INSTALL_LOCATION}/src/vcl
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/src
 )
+
+set(CMAKE_CXX_COMPILER "clang++")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20 -I/usr/local/include -march=native -mavx2 -mfma -O3")
+add_executable(option test/option.cpp)
+add_executable(cascaded_option test/cascaded_option.cpp)
+add_executable(series test/series.cpp)
+add_executable(filter_test test/filter.cpp)
+add_executable(filter example/filter.cpp)
 
 add_test(NAME option COMMAND option)
 add_test(NAME cascaded_option COMMAND cascaded_option)
