@@ -150,7 +150,7 @@ template<typename V> class ZeroInitCond{
 
         // calculate matrix B and A for block filtering. The addition of b_1 and a_1 is the lagged impulse response of recursive equation. 
         inline void impulse_response() {
-            T p2[M], p1[M], h0[M+1];
+            T p2[M+1], p1[M+1], h0[M+1];
 
             p2[0] = _b2;
             p2[1] = _a1*_b2;
