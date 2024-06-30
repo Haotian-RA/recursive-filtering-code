@@ -32,7 +32,7 @@ int main(){
                       };
 
     // 1.024M samples
-    static const int vector_size = 1024000;
+    static const int vector_size = 1024000000;
     // input: an equal-size impulse response
     std::array<T,vector_size> in = {0}, out;
     in[0] = 1;
